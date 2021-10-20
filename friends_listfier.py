@@ -18,11 +18,9 @@ def add_to_list(list_id, member_id):
     url = 'https://api.twitter.com/1.1/lists/members/create.json?'
     url += 'list_id='+ str(list_id) +'&'
     url += 'user_id='+ str(member_id)
-    headers = {
-    'Cookie': 'guest_id=v1%3A160805601485553252; personalization_id="v1_avHrOzKaJeJMXf77gpv/ig=="; lang=en'
-    }
+    
     try:
-        response = requests.request("POST", url, headers=headers, auth=auth)
+        response = requests.request("POST", url, auth=auth)
     except:
         print('error adding to list')
 
@@ -39,7 +37,7 @@ def ask_user(lists_list, member, users_left):
 def user_continue():
     msg = "Do you want to continue?"
     title = "Continue?"
-    return ccbox(msg, title)
+    return ccbox(msg, title, choices=("Continue", "Stop"))
 
 # get list of lists (name + id)
 cur.execute('SELECT * from lists ORDER BY list_name')

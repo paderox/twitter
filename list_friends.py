@@ -1,6 +1,6 @@
 import requests
 import json
-from keys_tokens import auth
+from keys_tokens import auth, main_account
 import sqlite3
 from datetime import datetime
 
@@ -10,22 +10,21 @@ cur = conn.cursor()
 cursor = '-1'
 while cursor != '0':
     url = 'https://api.twitter.com/1.1/friends/list.json?'
-    url += 'screen_name=paderox&'
+    url += 'screen_name='+ main_account +'&'
     url += 'cursor='+cursor+'&'
     url += 'count=200&'
     url += 'skip_status=false&'
     url += 'include_user_entities=false'
-    headers = {
-    'Cookie': 'guest_id=v1%3A160805601485553252;personalization_id="v1_avHrOzKaJeJMXf77gpv/ig=="; lang=en'
-    }
-    response = requests.request("GET", url, headers=headers, auth=auth)
+    response = requests.request("GET", url, auth=auth)
     data = json.loads(response.text)
 
     try:
         cursor = data['next_cursor_str']
     except:
         print(data['errors'][0]['message'])
-        break
+        conn.commit()
+        conn.close()
+        exit()
 
     for user in data['users']:
         name = user['name']

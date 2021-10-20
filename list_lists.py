@@ -1,21 +1,17 @@
 import requests
 import json
-from keys_tokens import auth
+from keys_tokens import auth, main_account
 import sqlite3
 
 conn = sqlite3.connect('twitter.sqlite')
 cur = conn.cursor()
 
-url = "https://api.twitter.com/1.1/lists/list.json?screen_name=paderox"
-
-headers = {
-'Cookie': 'guest_id=v1%3A160805601485553252;personalization_id="v1_avHrOzKaJeJMXf77gpv/ig=="; lang=en'
-}
-response = requests.request("GET", url, headers=headers, auth=auth)
+url = 'https://api.twitter.com/1.1/lists/list.json?screen_name=' + main_account
+response = requests.request("GET", url, auth=auth)
 lists = json.loads(response.text)
 
 for list in lists:
-    if list['user']['screen_name'] == 'paderox': #or list['user']['screen_name'] == 'ChrisWesseling':
+    if list['user']['screen_name'] == main_account:
         list_id = list['id']
         list_name = list['name'].lower().strip().replace(' ','').replace('-','').replace('.','').replace('/','')
         list_slug = list['slug']

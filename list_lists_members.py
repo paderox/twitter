@@ -20,10 +20,7 @@ for list in lists:
         url += "cursor=" + cursor + "&"
         url += "include_entities=false&"
         url += "skip_status=true"
-        headers = {
-        'Cookie': 'guest_id=v1%3A160805601485553252;personalization_id="v1_avHrOzKaJeJMXf77gpv/ig=="; lang=en'
-        }
-        response = requests.request("GET", url, headers=headers, auth=auth)
+        response = requests.request("GET", url, auth=auth)
         data = json.loads(response.text)
 
         try:
