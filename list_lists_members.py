@@ -13,6 +13,8 @@ for list in lists:
     list_id = str(list[0])
     list_name = list[1].lower().strip().replace(' ','').replace('-','').replace('.','').replace('/','')
     cursor = "-1"
+    cur.execute('DELETE from ' + list_name)
+    conn.commit()
     while cursor != '0':
         url = "https://api.twitter.com/1.1/lists/members.json?"
         url += "list_id=" + list_id + "&"

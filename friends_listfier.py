@@ -1,48 +1,16 @@
+# import do_all
 import requests
-from keys_tokens import auth
-from easygui import *
 import sqlite3
-import do_all
-import random
+from functions import unfollow, randomly, add_to_list, ask_user, user_continue
 
 conn = sqlite3.connect('twitter.sqlite')
 cur = conn.cursor()
-
-def randomly(seq):
-    shuffled = [x for x in seq]
-    #shuffled = seq
-    random.shuffle(shuffled)
-    return iter(shuffled)
-
-def add_to_list(list_id, member_id):
-    url = 'https://api.twitter.com/1.1/lists/members/create.json?'
-    url += 'list_id='+ str(list_id) +'&'
-    url += 'user_id='+ str(member_id)
-    
-    try:
-        response = requests.request("POST", url, auth=auth)
-    except:
-        print('error adding to list')
-
-def ask_user(lists_list, member, users_left):
-    # message to be displayed
-    text = member[1] + ' ( ' + member[2] + ' )' + '\n' + member[3]
-    # window title
-    title = 'total users remaining: ' + str(users_left)
-    # item choices
-    choices = lists_list
-    # creating a multi choice box
-    return multchoicebox(text, title, choices, preselect=None)
-
-def user_continue():
-    msg = "Do you want to continue?"
-    title = "Continue?"
-    return ccbox(msg, title, choices=("Continue", "Stop"))
 
 # get list of lists (name + id)
 cur.execute('SELECT * from lists ORDER BY list_name')
 lists_list = cur.fetchall()
 lists = [item[1] for item in lists_list]
+lists.append('Unfollow')
 lst_dic = dict([(y,x) for (x,y,z) in lists_list])
 
 # get list of friends without lists (name + id)
@@ -63,8 +31,11 @@ while should_continue:
                 break
         counter += 1
         selection = ask_user(lists, friends_no_list[i], len(friends_no_list)-counter)
-        if selection != None:
+        if selection == ['Unfollow']:
+                unfollow(friends_no_list[i][0])
+        elif selection != None:
             for lst in selection:
-                add_to_list(lst_dic[lst], friends_no_list[i][0])
+                if lst != 'Unfollow':
+                    add_to_list(lst_dic[lst], friends_no_list[i][0])
 
-print('end')
+print('no more unlisted friends')

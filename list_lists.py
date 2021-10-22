@@ -6,6 +6,19 @@ import sqlite3
 conn = sqlite3.connect('twitter.sqlite')
 cur = conn.cursor()
 
+cur.execute('''
+CREATE TABLE IF NOT EXISTS "lists" (
+	"list_id"	INTEGER NOT NULL UNIQUE,
+	"list_name"	TEXT NOT NULL,
+	"list_slug"	TEXT,
+	PRIMARY KEY("list_id")
+)
+''')
+conn.commit()
+
+cur.execute('DELETE from lists')
+conn.commit()
+
 url = 'https://api.twitter.com/1.1/lists/list.json?screen_name=' + main_account
 response = requests.request("GET", url, auth=auth)
 lists = json.loads(response.text)

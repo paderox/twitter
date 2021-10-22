@@ -7,6 +7,21 @@ from datetime import datetime
 conn = sqlite3.connect('twitter.sqlite')
 cur = conn.cursor()
 
+cur.execute('''
+CREATE TABLE IF NOT EXISTS "friends" (
+	"user_id"	INTEGER NOT NULL UNIQUE,
+	"name"	TEXT NOT NULL,
+	"handle"	TEXT,
+	"description"	TEXT,
+	"last_tweet"	TEXT,
+	PRIMARY KEY("user_id")
+)
+''')
+conn.commit()
+
+cur.execute('DELETE from friends')
+conn.commit()
+
 cursor = '-1'
 while cursor != '0':
     url = 'https://api.twitter.com/1.1/friends/list.json?'

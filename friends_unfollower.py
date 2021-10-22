@@ -1,30 +1,9 @@
-import requests
-from keys_tokens import auth
-from easygui import *
+# import do_all
 import sqlite3
-#import do_all
-import random
+from functions import unfollow, keep_following, user_continue
 
 conn = sqlite3.connect('twitter.sqlite')
 cur = conn.cursor()
-
-def unfollow(friend_id):
-    url = 'https://api.twitter.com/1.1/friendships/destroy.json?'
-    url += 'user_id='+ str(friend_id)
-    try:
-        response = requests.request("POST", url, auth=auth) #, headers=headers
-    except:
-        print('error unfollowing')
-
-def keep_following(friend):
-    msg = 'Keep following ' + friend[1] + ' ( ' + friend[2] + ' )?' + '\n' + '\n' + friend[3] + '\n' + '\n' + 'last tweet: ' + str(friend[4])
-    title = 'Should keep following ' + str(friend[1]) + '?'
-    return ynbox(msg, title, choices=("[<F1>]Keep Following", "[<F2>]Unfollow"))
-
-def user_continue():
-    msg = "Do you want to continue?"
-    title = "Continue?"
-    return ccbox(msg, title, choices=("Continue", "Stop"))
 
 # get list of friends ordered by last_tweet
 cur.execute('SELECT * from friends order by last_tweet')
